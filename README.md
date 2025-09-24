@@ -1,67 +1,23 @@
 # mission-impossible-rag
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+This project shows the integration between Quarkus and Docling (https://docling-project.github.io/docling/) for implementing RAG.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+Moreover, you'll see best practices about RAG like anonymizing, signature verification, or preserve distance encryption for vectors.
 
-## Running the application in dev mode
+This project is an AI application using:
 
-You can run your application in dev mode that enables live coding using:
+* Quarkus
+* LangChain4J (RAG + Tools) + ironcore-alloy + Bouncy Castle
+* Redis
+* H2
 
-```shell script
-./mvnw quarkus:dev
-```
+To start the example you need to:
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+Set QUARKUS_LANGCHAIN4J_OPENAI_API_KEY with your OpenAI API Key.
 
-## Packaging and running the application
+Have Docker or Podman Desktop installed in your computer in order to Quarkus automatically start Redis and MongoDB.
 
-The application can be packaged using:
+Run ./mvnw quarkus:dev
 
-```shell script
-./mvnw package
-```
+Check the video for a demo and the multiple options you can enable.
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/mission-impossible-rag-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-- Quarkus Docling ([guide](https://docs.quarkiverse.io/quarkus-docling/dev/index.html)): Runs Docling as an API service. Docling simplifies document processing, parsing diverse formats — including advanced PDF understanding — and providing seamless integrations with the gen AI ecosystem.
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
