@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(data => {
                     document.getElementById("spinnerOverlay").style.display = "none";
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        window.location.href = '/rag/show';
                     }, 1000);
                 })
             } else {

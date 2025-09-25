@@ -60,7 +60,7 @@ public class EncryptionVectorDecorator implements EmbeddingModel {
                 .map(vector -> {
 
                     PlaintextVector pv = new PlaintextVector(vector,
-                            new SecretPath(""),
+                            new SecretPath("documents"),
                             new DerivationPath(""));
 
                     AlloyMetadata alloyMetadata = AlloyMetadata.newSimple(new TenantId("tenant-1"));

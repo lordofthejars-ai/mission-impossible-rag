@@ -1,0 +1,42 @@
+{@org.acme.DocEntry item}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Document Parts</title>
+    <link rel="stylesheet" href="/styles/show.css">
+</head>
+<body>
+<div class="wrap">
+    <h1>Document Parts</h1>
+
+    <div class="grid">
+
+        {#for item in entries}
+            <article class="card">
+                <div>
+                    <p class="long-text">{item.text}</p>
+                </div>
+
+                <div class="meta">
+                    <div class="avatar">MD</div>
+                    <div class="meta-body">
+                        <div class="title">ID</div>
+                        <div class="sub">{item.id}</div>
+                    </div>
+                </div>
+
+                <div class="array" aria-label="array of doubles">
+                    {#for v in item.vector}
+                        <span class="chip">{v}</span>
+                    {/for}
+                </div>
+            </article>
+        {/for}
+
+
+    </div>
+</div>
+</body>
+</html>

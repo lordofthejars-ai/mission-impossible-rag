@@ -11,6 +11,12 @@ import com.itextpdf.signatures.IExternalSignature;
 import com.itextpdf.signatures.PdfSigner;
 import com.itextpdf.signatures.PrivateKeySignature;
 import com.itextpdf.signatures.SignerProperties;
+import io.quarkus.qute.CheckedTemplate;
+import io.quarkus.qute.TemplateInstance;
+import io.quarkus.redis.datasource.RedisDataSource;
+import io.quarkus.redis.datasource.json.JsonCommands;
+import io.quarkus.redis.datasource.keys.KeyCommands;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -33,6 +39,7 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Path("/rag")
@@ -49,14 +56,14 @@ public class RAGResource {
     @Inject
     Logger logger;
 
-   @GET
-   @Path("/verify")
-   public String verifyPdf() throws GeneralSecurityException, IOException {
-       InputStream src = RAGResource.class.getClassLoader().getResourceAsStream("/" + FILE_TO_SIGN + "-sign.pdf");
-       pdfSignature.verifySignature(src);
+    @GET
+    @Path("/verify")
+    public String verifyPdf() throws GeneralSecurityException, IOException {
+        InputStream src = RAGResource.class.getClassLoader().getResourceAsStream("/" + FILE_TO_SIGN + "-sign.pdf");
+        pdfSignature.verifySignature(src);
 
-       return "Verified";
-   }
+        return "Verified";
+    }
 
     @GET
     @Path("/sign")
@@ -94,22 +101,22 @@ public class RAGResource {
     @Path("uploadItem")
     public Response uploadItem(@RestForm("mission") FileUpload file) throws IOException {
 
-       logger.infof("%s file received.", file.fileName());
+        logger.infof("%s file received.", file.fileName());
 
-       Mission m = missionLoader.ingestDocument(
-               Files.readAllBytes(file.uploadedFile()),
-               file.fileName()
-       );
+        Mission m = missionLoader.ingestDocument(
+                Files.readAllBytes(file.uploadedFile()),
+                file.fileName()
+        );
 
-       if (m == null) {
-           return Response.serverError().build();
-       }
+        if (m == null) {
+            return Response.serverError().build();
+        }
 
-       final Map<String, Object> returnObject = new HashMap<>();
-       returnObject.put("id", m.id);
-       JsonObject jsonObject = new JsonObject(returnObject);
+        final Map<String, Object> returnObject = new HashMap<>();
+        returnObject.put("id", m.id);
+        JsonObject jsonObject = new JsonObject(returnObject);
 
-       return Response.ok().entity(jsonObject).build();
+        return Response.ok().entity(jsonObject).build();
 
     }
 
@@ -123,4 +130,38 @@ public class RAGResource {
         missionLoader.ingestDocument(allBytes, "mission1.pdf");
         return "Hello from Quarkus REST";
     }
+
+    @CheckedTemplate
+    public static class Templates {
+        public static native TemplateInstance show(List<DocEntry> entries);
+    }
+
+    public RAGResource(RedisDataSource ds) {
+        docs = ds.json();
+        keys = ds.key();
+    }
+
+    JsonCommands<String> docs;
+    KeyCommands<String> keys;
+
+    @GET
+    @Path("/show")
+    @Produces(MediaType.TEXT_HTML)
+    public TemplateInstance render() {
+
+        List<DocEntry> docEntries = keys.keys("embedding*")
+                .stream()
+                .map(k -> docs.jsonGetObject(k))
+                .map(o -> {
+                    JsonArray vector = o.getJsonArray("vector");
+                    List<Object> vectors = vector.stream()
+                            .limit(5)
+                            .toList();
+                    return new DocEntry(o.getString("scalar"), o.getString("id"), vectors);
+                })
+                .toList();
+
+        return Templates.show(docEntries);
+    }
+
 }
