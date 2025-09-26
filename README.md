@@ -15,9 +15,10 @@ To start the example you need to:
 
 Set QUARKUS_LANGCHAIN4J_OPENAI_API_KEY with your OpenAI API Key.
 
-Have Docker or Podman Desktop installed in your computer in order to Quarkus automatically start Redis and MongoDB.
+Have Docker or Podman Desktop installed on your computer in order for Quarkus to automatically start Redis and MongoDB.
 
 Run ./mvnw quarkus:dev
 
 Check the video for a demo and the multiple options you can enable.
 
+Video: https://youtu.be/t1yU4gxL1ao
