@@ -25,7 +25,7 @@ public class IroncoreAlloySdkProducer {
                 new StandaloneSecret(1, new Secret(keyByteArray));
 
         VectorSecret vectorSecret =
-                new VectorSecret(approximationFactor, new RotatableSecret(standaloneSecret, null));
+                VectorSecret.newWithScalingFactor(approximationFactor, new RotatableSecret(standaloneSecret, null));
 
         Map<SecretPath, VectorSecret> vectorSecrets = Collections.singletonMap(new SecretPath("documents"), vectorSecret);
 

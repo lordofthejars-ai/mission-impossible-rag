@@ -28,7 +28,7 @@ public class MissionIngestor {
     boolean anonymize;
 
     @Inject
-    //@Identifier("encryption")
+    @Identifier("encryption")
     EmbeddingModel embeddingModel;
 
     @Inject
